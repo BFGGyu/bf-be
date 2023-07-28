@@ -62,4 +62,16 @@ jobs:
           docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
           docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
 
-# 확인
+      # 시크릿 값 로드
+      - name: Load secrets.json
+        run: |
+          echo "${{ secrets.SECRETS_JSON }}" > secrets.json
+
+      # 배포 단계에서 secrets.json 파일 사용
+      - name: Deploy Django project
+        run: |
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+          python manage.py runserver
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}

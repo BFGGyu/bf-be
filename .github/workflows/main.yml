@@ -61,3 +61,5 @@ jobs:
         run: |
           docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
           docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
+
+# 확인

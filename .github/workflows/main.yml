@@ -84,7 +84,7 @@ jobs:
           python manage.py runserver
 
         env:
-        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
 
       # 배포 단계에서 secrets.json 파일 사용
       # - name: Deploy Django project

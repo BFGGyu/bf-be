@@ -36,7 +36,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -55,7 +55,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
       # 3000 -> 80 포트로 수행하도록 지정
       - name: Docker run
         run: |
@@ -63,3 +63,4 @@ jobs:
           docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
 
 # 확인
+G

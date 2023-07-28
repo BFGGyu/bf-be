@@ -50,28 +50,47 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, label-go] # AWS ./configure에서 사용할 label명
     steps:
+      # 레포지토리 코드를 가져오기 위해 actions/checkout@v2 액션 사용
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Login to ghcr
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_TOKEN }}
-      # 3000 -> 80 포트로 수행하도록 지정
-      - name: Docker run
-        run: |
-          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
+
+      # # 3000 -> 80 포트로 수행하도록 지정
+      # - name: Docker run
+      #   run: |
+      #     docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
+      #     docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
 
       # 시크릿 값 로드
       - name: Load secrets.json
         run: |
           echo "${{ secrets.SECRETS_JSON }}" > secrets.json
 
-      # 배포 단계에서 secrets.json 파일 사용
+      # 배포 단계에서 Django 프로젝트 실행
       - name: Deploy Django project
         run: |
+          # secrets.json 파일이 복사된 후에 파일 내용을 환경 변수로 설정
+          export $(jq -r 'to_entries[] | .key + "=" + .value' secrets.json)
+
+          # 필요한 Django 관련 명령어 실행
           python manage.py migrate
           python manage.py collectstatic --noinput
           python manage.py runserver
+
         env:
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+
+      # 배포 단계에서 secrets.json 파일 사용
+      # - name: Deploy Django project
+      #   run: |
+      #     python manage.py migrate
+      #     python manage.py collectstatic --noinput
+      #     python manage.py runserver
+      #   env:
+      #     DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}

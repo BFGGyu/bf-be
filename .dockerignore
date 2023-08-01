@@ -1,3 +1,5 @@
-djangoapp/
-Dockerfile
-dockerignore
+static/
+build/
+test_data/
+
+.env

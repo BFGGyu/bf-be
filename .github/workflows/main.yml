@@ -65,7 +65,7 @@ jobs:
       - name: Docker run
         run: |
           docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
+          docker run -d -p 8000:3000 --name go_cicd --restart always --privileged ${{ env.DOCKER_IMAGE }}:latest
 
         # env:
         #   DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
@@ -183,5 +183,3 @@ jobs:
 #       - name: Remove secrets.json
 #         run: |
 #           rm -f secrets.json
-
-# 확인

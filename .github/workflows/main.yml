@@ -65,8 +65,12 @@ jobs:
       - name: Docker run
         run: |
           docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
+          docker run -d -p 8000:8000 --name my_django_app my_django_app
 
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+
+        # docker run -d -p 8000:3000 --name go_cicd --restart always ${{ env.DOCKER_IMAGE }}:latest
 #       # 시크릿 값 로드
 #       - name: Load secrets.json
 #         run: |
